@@ -5,7 +5,6 @@ import os
 import sqlite3
 import ssl
 import datetime
-import shutil
 import sys
 from codecs import encode
 from radiant_mlhub import Dataset
@@ -20,7 +19,6 @@ context.verify_mode = ssl.CERT_NONE
 conn = http.client.HTTPSConnection(
     host='edge.estuary.tech',
 )
-
 
 # function to upload to delta and accepts a file path
 def upload_to_delta(file_path, miner, estuary_api_key):
@@ -85,7 +83,7 @@ def upload_to_delta(file_path, miner, estuary_api_key):
     sqlconn.commit()
 
 
-# function to get all the files in the directory
+## function to get all files in a directory
 def get_all_files(directory):
     # initializing empty file paths list
     file_paths = []
@@ -100,11 +98,11 @@ def get_all_files(directory):
     # returning all file paths
     return file_paths
 
-
+## function to process the dataset
 def process_data_set(dataset, location="./all_datasets/"):
     dataset.download(location)
 
-
+## create the database if not exists
 def create_sql_db():
     sqlconn = sqlite3.connect('rmhub_to_delta.db')
     cursor = sqlconn.cursor()
