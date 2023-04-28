@@ -38,4 +38,3 @@ This generates a sqlite table with the following columns
 
 # Author
 Outercore Engineering Team.
-# rhub-to-delta
