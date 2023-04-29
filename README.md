@@ -8,6 +8,7 @@ Note: This will run multiple threads on the host server.
 - Pull all datasets from Radiant
 - Download and save it on the host PC / server
 - Upload all extracted and decompressed content to edge > delta
+- Save all information to a local SQLlite DB for tracking
 
 ## Installation
 ```bash
