@@ -60,17 +60,19 @@ def upload_to_delta(file_path, miner, estuary_api_key):
     responseJson = json.loads(data)
 
     cid = responseJson["contents"][0]["cid"]
+    edge_content_id = responseJson["contents"][0]["ID"]
     name = responseJson["contents"][0]["name"]
     size = responseJson["contents"][0]["size"]
     ret_url = "https://edge.estuary.tech/gw/" + responseJson["contents"][0]["cid"]
 
     cursor.execute(
         "INSERT INTO rhub_data ("
-        "name, file_path, cid, size, cid_url, status, api_key, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, "
-        "?, ?)",
+        "name, file_path, edge_content_id, cid, size, cid_url, status, api_key, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, "
+        "?, ?, ?)",
         (
             name,
             file_path,
+            edge_content_id,
             cid,
             size,
             ret_url,
@@ -108,7 +110,7 @@ def create_sql_db():
     cursor = sqlconn.cursor()
 
     cursor.execute("CREATE TABLE IF NOT EXISTS rhub_data ("
-                   "name TEXT, file_path TEXT, cid TEXT, size TEXT, cid_url TEXT,"
+                   "name TEXT, edge_content_id TEXT, file_path TEXT, cid TEXT, size TEXT, cid_url TEXT,"
                    "status TEXT,api_key TEXT, created_at DATE, updated_at DATE)")
 
     return sqlconn
@@ -128,10 +130,11 @@ sqlconn = create_sql_db()
 # prepare the dataset
 datasets = Dataset.list(tags=tags)
 
-scheduler = BlockingScheduler()
+#scheduler = BlockingScheduler()
 for dataset in datasets:
-    scheduler.add_job(process_data_set, 'interval', args=(dataset[0],), seconds=5)
-    scheduler.start()
+    #scheduler.add_job(process_data_set, 'interval', args=(dataset[0],), seconds=5)
+    #scheduler.start()
+    process_data_set(dataset)
 
 files = get_all_files("./all_datasets/")
 for file in files:
